@@ -385,16 +385,28 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
 
-            let bezierPath = UIBezierPath(roundedRect: barRect, byRoundingCorners: [.topLeft , .topRight], cornerRadii: CGSize(width: barRect.width * dataSet.barCornerRadiusFactor, height: barRect.height * dataSet.barCornerRadiusFactor))
+            let cornerRadiusSize = CGSize(width: barRect.width * dataSet.barCornerRadiusFactor, 
+                                          height: barRect.height * dataSet.barCornerRadiusFactor)
+
+            let bezierPath = UIBezierPath(roundedRect: barRect, 
+                                          byRoundingCorners: [.topLeft, .topRight],
+                                          cornerRadii: cornerRadiusSize)
+
+            // Draw the filled rounded rectangle
             context.addPath(bezierPath.cgPath)
             context.drawPath(using: .fill)
 
-            if drawBorder
-            {
-                context.addPath(bezierPath.cgPath)  // Re-add the path for stroking
+            if drawBorder && barRect.height != 0.0 {
+
+                // Re-create the bezier path for the border
+                let borderBezierPath = UIBezierPath(roundedRect: barRect, 
+                                                    byRoundingCorners: [.topLeft, .topRight], cornerRadii: cornerRadiusSize)
+                context.addPath(borderBezierPath.cgPath)
+
+                // Set border properties and stroke
                 context.setStrokeColor(borderColor.cgColor)
                 context.setLineWidth(borderWidth)
-                context.stroke(barRect)
+                context.drawPath(using: .stroke)
             }
 
             // Create and append the corresponding accessibility element to accessibilityOrderedElements
