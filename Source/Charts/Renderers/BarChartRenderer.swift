@@ -391,6 +391,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
             if drawBorder
             {
+                context.addPath(bezierPath.cgPath)  // Re-add the path for stroking
                 context.setStrokeColor(borderColor.cgColor)
                 context.setLineWidth(borderWidth)
                 context.stroke(barRect)
